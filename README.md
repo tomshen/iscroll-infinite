@@ -17,9 +17,11 @@ This is a fork of [iScroll](http://iscrolljs.com/)'s infinite scrolling module. 
 >
 > iScroll integrates a smart caching system that allows to handle of a virtually infinite amount of data using (and reusing) just a bunch of elements.
 
-## General Documentation
+## Documentation
 The majority of the code is for general scrolling. The functions that handle infinite scrolling are:
 * `_initInfinite`
 * `reorderInfinite`
 * `updateContent`
 * `updateCache`
+
+See the [JSDoc](http://www.tomshen.me/iscroll-infinite/docs/) for more details.
