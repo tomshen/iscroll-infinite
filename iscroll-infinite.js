@@ -48,7 +48,7 @@ var utils = (function () {
 	};
 
 	me.prefixPointerEvent = function (pointerEvent) {
-		return window.MSPointerEvent ? 
+		return window.MSPointerEvent ?
 			'MSPointer' + pointerEvent.charAt(9).toUpperCase() + pointerEvent.substr(10):
 			pointerEvent;
 	};
@@ -245,21 +245,50 @@ var utils = (function () {
 	return me;
 })();
 
+/**
+ * Updates data for infinite scroll elements. Must call {@link updateCache}.
+ * @name DataSet
+ * @function
+ * @param {Number} start The index of the first element to retrieve data for
+ * @param {Number} count The number of elements to retrieve
+ */
+
+/**
+ * Renders an infinite scroll element given data.
+ * @name DataFiller
+ * @function
+ * @param {HTMLElement} el The DOM node for the given element
+ * @param {Object} data The data for the given element
+ */
+
+/**
+ * Intializes infinite scrolling.
+ * @name IScroll
+ * @constructor
+ * @param {String|HTMLElement} el The selector for wrapper element for infinite
+ * scrolling, or the element itself
+ * @param {Object} options The options object (see
+ * {@link http://iscrolljs.com/#the-core})
+ * @param {String|NodeList} options.infiniteElements The selector for elements
+ * that are scrolled through, or the elements themselves
+ * @param {DataSet} options.dataset
+ * @param {DataFiller} options.dataFiller
+ * @param {Number} [options.cacheSize=1000] The number of elements to cache
+ */
 function IScroll (el, options) {
 	this.wrapper = typeof el == 'string' ? document.querySelector(el) : el;
 	this.scroller = this.wrapper.children[0];
-	this.scrollerStyle = this.scroller.style;		// cache style for better performance
+
+	// cache style for better performance
+	this.scrollerStyle = this.scroller.style;
 
 	this.options = {
-
 		mouseWheelSpeed: 20,
 
 		snapThreshold: 0.334,
 
 		infiniteUseTransform: true,
 		deceleration: 0.004,
-
-// INSERT POINT: OPTIONS 
 
 		startX: 0,
 		startY: 0,
@@ -318,16 +347,12 @@ function IScroll (el, options) {
 	if ( this.options.probeType == 3 ) {
 		this.options.useTransition = false;	}
 
-// INSERT POINT: NORMALIZATION
-
-	// Some defaults	
+	// Some defaults
 	this.x = 0;
 	this.y = 0;
 	this.directionX = 0;
 	this.directionY = 0;
 	this._events = {};
-
-// INSERT POINT: DEFAULTS
 
 	this._init();
 	this.refresh();
@@ -357,8 +382,6 @@ IScroll.prototype = {
 		if ( this.options.infiniteElements ) {
 			this._initInfinite();
 		}
-
-// INSERT POINT: _init
 
 	},
 
@@ -515,8 +538,6 @@ IScroll.prototype = {
 		this.moved = true;
 
 		this._translate(newX, newY);
-
-/* REPLACE START: _move */
 		if ( timestamp - this.startTime > 300 ) {
 			this.startTime = timestamp;
 			this.startX = this.x;
@@ -530,8 +551,6 @@ IScroll.prototype = {
 		if ( this.options.probeType > 1 ) {
 			this._execEvent('scroll');
 		}
-/* REPLACE END: _move */
-
 	},
 
 	_end: function (e) {
@@ -610,9 +629,6 @@ IScroll.prototype = {
 			this.directionY = 0;
 			easing = this.options.bounceEasing;
 		}
-
-// INSERT POINT: _end
-
 		if ( newX != this.x || newY != this.y ) {
 			// change easing function when scroller goes out of the boundaries
 			if ( newX > 0 || newX < this.maxScrollX || newY > 0 || newY < this.maxScrollY ) {
@@ -677,19 +693,17 @@ IScroll.prototype = {
 		this.wrapperWidth	= this.wrapper.clientWidth;
 		this.wrapperHeight	= this.wrapper.clientHeight;
 
-/* REPLACE START: refresh */
 		this.scrollerWidth	= this.scroller.offsetWidth;
 		this.scrollerHeight	= this.scroller.offsetHeight;
 
 		this.maxScrollX		= this.wrapperWidth - this.scrollerWidth;
-		
+
 		var limit;
 		if ( this.options.infiniteElements ) {
 			this.options.infiniteLimit = this.options.infiniteLimit || Math.floor(2147483645 / this.infiniteElementHeight);
 			limit = -this.options.infiniteLimit * this.infiniteElementHeight + this.wrapperHeight;
 		}
 		this.maxScrollY		= limit !== undefined ? limit : this.wrapperHeight - this.scrollerHeight;
-/* REPLACE END: refresh */
 
 		this.hasHorizontalScroll	= this.options.scrollX && this.maxScrollX < 0;
 		this.hasVerticalScroll		= this.options.scrollY && this.maxScrollY < 0;
@@ -713,9 +727,6 @@ IScroll.prototype = {
 		this._execEvent('refresh');
 
 		this.resetPosition();
-
-// INSERT POINT: _refresh
-
 	},
 
 	on: function (type, fn) {
@@ -816,27 +827,15 @@ IScroll.prototype = {
 		if ( !time && utils.isBadAndroid ) {
 			this.scrollerStyle[utils.style.transitionDuration] = '0.001s';
 		}
-
-// INSERT POINT: _transitionTime
-
 	},
 
 	_transitionTimingFunction: function (easing) {
 		this.scrollerStyle[utils.style.transitionTimingFunction] = easing;
-
-// INSERT POINT: _transitionTimingFunction
-
 	},
 
 	_translate: function (x, y) {
 		if ( this.options.useTransform ) {
-
-/* REPLACE START: _translate */
-
 			this.scrollerStyle[utils.style.transform] = 'translate(' + x + 'px,' + y + 'px)' + this.translateZ;
-
-/* REPLACE END: _translate */
-
 		} else {
 			x = Math.round(x);
 			y = Math.round(y);
@@ -846,9 +845,6 @@ IScroll.prototype = {
 
 		this.x = x;
 		this.y = y;
-
-// INSERT POINT: _translate
-
 	},
 
 	_initEvents: function (remove) {
@@ -1008,8 +1004,6 @@ IScroll.prototype = {
 		if ( this.options.probeType > 1 ) {
 			this._execEvent('scroll');
 		}
-
-// INSERT POINT: _wheel
 	},
 
 	_initSnap: function () {
@@ -1397,7 +1391,7 @@ IScroll.prototype = {
 			if ( now >= destTime ) {
 				that.isAnimating = false;
 				that._translate(destX, destY);
-				
+
 				if ( !that.resetPosition(that.options.bounceTime) ) {
 					that._execEvent('scrollEnd');
 				}
@@ -1424,6 +1418,11 @@ IScroll.prototype = {
 		step();
 	},
 
+	/**
+	 * Initializes infinite scrolling.
+	 * @name _initInfinite
+	 * @function
+	 */
 	_initInfinite: function () {
 		var el = this.options.infiniteElements;
 
@@ -1436,7 +1435,6 @@ IScroll.prototype = {
 		this.options.cacheSize = this.options.cacheSize || 1000;
 		this.infiniteCacheBuffer = Math.round(this.options.cacheSize / 4);
 
-		//this.infiniteCache = {};
 		this.options.dataset.call(this, 0, this.options.cacheSize);
 
 		this.on('refresh', function () {
@@ -1448,19 +1446,27 @@ IScroll.prototype = {
 		this.on('scroll', this.reorderInfinite);
 	},
 
-	// TO-DO: clean up the mess
+	/**
+	 * Swaps in and out elements. Called on every refresh/scroll.
+	 * @name reorderInfinite
+	 * @function
+	 */
 	reorderInfinite: function () {
 		var center = -this.y + this.wrapperHeight / 2;
 
-		var minorPhase = Math.max(Math.floor(-this.y / this.infiniteElementHeight) - this.infiniteUpperBufferSize, 0),
-			majorPhase = Math.floor(minorPhase / this.infiniteLength),
-			phase = minorPhase - majorPhase * this.infiniteLength;
+		var minorPhase = Math.max(Math.floor(-this.y / this.infiniteElementHeight)
+			- this.infiniteUpperBufferSize, 0);
+
+		var majorPhase = Math.floor(minorPhase / this.infiniteLength);
+
+		var phase = minorPhase - majorPhase * this.infiniteLength;
 
 		var top = 0;
+
 		var i = 0;
+
 		var update = [];
 
-		//var cachePhase = Math.floor((minorPhase + this.infiniteLength / 2) / this.infiniteCacheBuffer);
 		var cachePhase = Math.floor(minorPhase / this.infiniteCacheBuffer);
 
 		while ( i < this.infiniteLength ) {
@@ -1476,19 +1482,22 @@ IScroll.prototype = {
 				if ( this.infiniteElements[i]._phase < this.options.infiniteLimit ) {
 					this.infiniteElements[i]._top = top;
 					if ( this.options.infiniteUseTransform ) {
-						this.infiniteElements[i].style[utils.style.transform] = 'translate(0, ' + top + 'px)' + this.translateZ;
+						this.infiniteElements[i].style[utils.style.transform] =
+							'translate(0, ' + top + 'px)' + this.translateZ;
 					} else {
 						this.infiniteElements[i].style.top = top + 'px';
 					}
 					update.push(this.infiniteElements[i]);
 				}
 			}
-
 			i++;
 		}
 
-		if ( this.cachePhase != cachePhase && (cachePhase === 0 || minorPhase - this.infiniteCacheBuffer > 0) ) {
-			this.options.dataset.call(this, Math.max(cachePhase * this.infiniteCacheBuffer - this.infiniteCacheBuffer, 0), this.options.cacheSize);
+		if ( this.cachePhase != cachePhase &&
+			(cachePhase === 0 || minorPhase - this.infiniteCacheBuffer > 0) ) {
+			this.options.dataset.call(this,
+				Math.max(cachePhase * this.infiniteCacheBuffer - this.infiniteCacheBuffer, 0),
+				this.options.cacheSize);
 		}
 
 		this.cachePhase = cachePhase;
@@ -1496,6 +1505,13 @@ IScroll.prototype = {
 		this.updateContent(update);
 	},
 
+	/**
+	 * Renders the given elements with appropriate data. Called after
+	 * updating the cache. Calls [options.dataFiller]{@link DataFiller}.
+	 * @name updateContent
+	 * @function
+	 * @param {HTMLElement[]} els The elements to render
+	 */
 	updateContent: function (els) {
 		if ( this.infiniteCache === undefined ) {
 			return;
@@ -1506,6 +1522,13 @@ IScroll.prototype = {
 		}
 	},
 
+	/**
+	 * Updates cache with data. Must be called by [options.dataset]{@link DataSet}.
+	 * @name updateCache
+	 * @function
+	 * @param {Number} start The start index of the data
+	 * @param {Object[]} data The list of data to add to the cache
+	 */
 	updateCache: function (start, data) {
 		var firstRun = this.infiniteCache === undefined;
 
@@ -1520,7 +1543,6 @@ IScroll.prototype = {
 		}
 
 	},
-
 
 	handleEvent: function (e) {
 		switch ( e.type ) {
